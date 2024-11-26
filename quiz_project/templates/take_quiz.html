@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Take Quiz</title>
+</head>
+<body>
+    <h1>{{ quiz.title }}</h1>
+    <form method="post" id="quizForm">
+        {% csrf_token %}
+        {% for question in questions %}
+            <div>
+                <p>{{ question.text }}</p>
+                {% for answer in question.answers %}
+                    <label input type="radio" name="{{ question.id }}" value="{{ answer.id }}"> {{ answer.text }}<br>
+                {% endfor %}
+            </div>
+        {% endfor %}
+        <button type="submit">Submit Quiz</button>
+    </form>
+    <div id="timer"></div>
+    <script>
+        let timeLeft = 300; // 5 minutes in seconds
+        const timerElement = document.getElementById('timer');
+
+        function updateTimer() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerElement.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            if (timeLeft > 0) {
+                timeLeft--;
+            } else {
+                document.getElementById('quizForm').submit();
+            }
+        }
+
+        setInterval(updateTimer, 1000);
+    </script>
+</body>
+</html>
